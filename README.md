@@ -73,7 +73,7 @@ Currently optimized for C++, but designed for multi-language support:
 
 ## TODO List
 
-- [ ] Display solutions according to problem name
+- [x] Display solutions according to problem name
 - [ ] Implement full automation for problem submission process
 - [ ] Add automatic navigation to next problem
 - [ ] Expand problem mapping to 3399
