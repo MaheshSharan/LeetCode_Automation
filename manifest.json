@@ -30,18 +30,18 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://leetcode.com/problems/*",
-        "https://leetcode.com/problems/*/description"
-      ],
-      "js": ["src/scripts/content.js"],
-      "run_at": "document_idle"
+      "matches": ["https://leetcode.com/*"],
+      "js": ["src/scripts/content.js"]
     }
   ],
   "web_accessible_resources": [
     {
       "resources": ["solutions/*"],
       "matches": ["https://leetcode.com/*", "<all_urls>"]
+    },
+    {
+      "resources": ["inject.js"],
+      "matches": ["<all_urls>"]
     }
   ]
 }

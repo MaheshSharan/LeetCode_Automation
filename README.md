@@ -73,9 +73,9 @@ Currently optimized for C++, but designed for multi-language support:
 
 ## TODO List
 
-- [ ] Display solutions according to problem name
-- [ ] Implement full automation for problem submission process
-- [ ] Add automatic navigation to next problem
+- [done] Display solutions according to problem name
+- [done] Implement full automation for problem submission process
+- [done] Add automatic navigation to next problem
 - [ ] Expand problem mapping to 3399
 - [ ] Add support for multiple programming languages
 - [ ] Implement solution versioning
