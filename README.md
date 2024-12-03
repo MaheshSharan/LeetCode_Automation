@@ -1,5 +1,8 @@
-# LeetCode Automation Chrome Extension
+<div align="center">
+  <img src="https://assets.leetcode.com/static_assets/public/webpack_bundles/images/logo-dark.e99485d9b.svg" alt="LeetCode Banner" width="600px">
+</div>
 
+# LeetCode Automation Chrome Extension
 A powerful Chrome extension that automates your LeetCode problem-solving workflow. Currently optimized for C++ solutions with built-in extensibility for other programming languages. The extension automatically detects the current problem, loads the appropriate solution, and helps streamline your LeetCode practice sessions.
 
 ## Features
@@ -8,7 +11,7 @@ A powerful Chrome extension that automates your LeetCode problem-solving workflo
 - Solution Auto-Loading: Instantly loads solutions from your local repository
 - Dark Theme UI: Modern, eye-friendly interface
 - Quick Copy: One-click solution copying
-- Extensive Coverage: Currently mapped for problems 0-899 (expandable to 3399)
+- Extensive Coverage: Currently mapped for problems 0-3359 (expandable to 3399)
 - Language Support: Currently optimized for C++, with easy extensibility for other languages
 - Clean Interface: Intuitive popup window with problem information and controls
 
@@ -36,8 +39,8 @@ A powerful Chrome extension that automates your LeetCode problem-solving workflo
 
 ## Current Solution Coverage
 
-- Problems range: 0-899 (currently implemented)
-- Planned expansion: Up to problem 3399
+- Problems range: 0-3358 (currently implemented)
+- Planned expansion: Up to problem 3399 and more
 - Primary language: C++
 - Solution format: Optimized and tested solutions
 
@@ -76,7 +79,7 @@ Currently optimized for C++, but designed for multi-language support:
 - [x] Display solutions according to problem name
 - [x] Implement full automation for problem submission process
 - [x] Add automatic navigation to next problem
-- [ ] Expand problem mapping to 3399
+- [x] Expand problem mapping to 3359
 - [ ] Add support for multiple programming languages
 - [ ] Implement solution versioning
 - [ ] Add solution performance metrics
