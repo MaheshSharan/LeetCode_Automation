@@ -19,14 +19,15 @@ python -m bot.main
 
 ## VPS Deployment
 
-### 1. Copy to Server
+### 1. Clone to Server
 ```bash
-scp -r . root@your-vps:/var/www/leetcode-bot/
+cd /var/www/
+git clone https://github.com/MaheshSharan/LeetCode_Automation  leetcode-bot
 ```
 
 ### 2. Run Setup Script
 ```bash
-ssh root@your-vps
+
 cd /var/www/leetcode-bot
 chmod +x deploy.sh
 ./deploy.sh

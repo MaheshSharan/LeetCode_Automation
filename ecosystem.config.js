@@ -5,7 +5,7 @@ module.exports = {
     apps: [
         {
             name: "leetcode-bot",
-            script: "python3",
+            script: "/var/www/leetcode-bot/venv/bin/python",
             args: "-m bot.main",
             cwd: "/var/www/leetcode-bot",
 
