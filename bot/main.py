@@ -96,15 +96,18 @@ async def login_with_google(page: Page, email: str, password: str) -> bool:
             print("  Entering password...")
             await password_input.fill(password)
             await page.keyboard.press("Enter")
-            await asyncio.sleep(8)
+            print("  Waiting for 2FA verification (up to 60s)...")
     except Exception as e:
         print(f"  Password step skipped: {e}")
     
-    # Final check
-    await asyncio.sleep(3)
-    if "leetcode.com" in page.url and "login" not in page.url.lower():
-        print("  ✓ Login successful!")
-        return True
+    # Wait for 2FA/verification - poll every 5 seconds for up to 60 seconds
+    for i in range(12):  # 12 * 5 = 60 seconds
+        await asyncio.sleep(5)
+        current_url = page.url
+        if "leetcode.com" in current_url and "login" not in current_url.lower() and "accounts" not in current_url.lower():
+            print("  ✓ Login successful!")
+            return True
+        print(f"  Waiting... ({(i+1)*5}s)")
     
     print(f"  Current URL: {page.url}")
     return "leetcode.com" in page.url and "login" not in page.url.lower()
