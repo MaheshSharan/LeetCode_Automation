@@ -1,109 +1,84 @@
-<div align="center">
-  <img src="https://assets.leetcode.com/static_assets/public/webpack_bundles/images/logo-dark.e99485d9b.svg" alt="LeetCode Banner" width="600px">
-</div>
+# LeetCode Daily Bot
 
-# LeetCode Automation Chrome Extension
-A powerful Chrome extension that automates your LeetCode problem-solving workflow. Currently optimized for C++ solutions with built-in extensibility for other programming languages. The extension automatically detects the current problem, loads the appropriate solution, and helps streamline your LeetCode practice sessions.
+Automated LeetCode problem solver using Google OAuth login and C++ solutions.
 
-## Features
+## Quick Start
 
-- Smart Problem Detection: Automatically identifies the current LeetCode problem
-- Solution Auto-Loading: Instantly loads solutions from your local repository
-- Dark Theme UI: Modern, eye-friendly interface
-- Quick Copy: One-click solution copying
-- Extensive Coverage: Currently mapped for problems 0-3359 (expandable to 3399)
-- Language Support: Currently optimized for C++, with easy extensibility for other languages
-- Clean Interface: Intuitive popup window with problem information and controls
+```bash
+# Install dependencies
+pip install -r requirements.txt
+playwright install chromium
 
-## Installation
+# Setup credentials
+cp .env.example bot/.env
+nano bot/.env  # Add your Gmail credentials
 
-1. Enable Developer Mode in Chrome:
-   - Open Chrome and navigate to `chrome://extensions/`
-   - Toggle "Developer mode" in the top right corner
+# Run the bot
+python -m bot.main
+```
 
-2. Load the Extension:
-   - Click "Load unpacked"
-   - Select the extension directory
-   - The extension icon should appear in your Chrome toolbar
+## VPS Deployment
 
-## How to Use
+### 1. Copy to Server
+```bash
+scp -r . root@your-vps:/var/www/leetcode-bot/
+```
 
-1. Navigate: Go to any LeetCode problem page
-2. Click: Open the extension by clicking its icon
-3. Load: The extension will automatically:
-   - Detect the current problem
-   - Find the corresponding solution
-   - Display the solution details
-4. Copy: Use the copy button to copy the solution code
-5. Submit: Paste and submit your solution
+### 2. Run Setup Script
+```bash
+ssh root@your-vps
+cd /var/www/leetcode-bot
+chmod +x deploy.sh
+./deploy.sh
+```
 
-## Current Solution Coverage
+### 3. Start with PM2
+```bash
+pm2 start ecosystem.config.js
+pm2 save
+pm2 startup
+```
 
-- Problems range: 0-3358 (currently implemented)
-- Planned expansion: Up to problem 3399 and more
-- Primary language: C++
-- Solution format: Optimized and tested solutions
+### 5. Check Status
+```bash
+pm2 status
+pm2 logs leetcode-bot
+```
 
-## Technical Details
+## Configuration
 
-- Built with vanilla JavaScript for optimal performance
-- Uses Chrome Extension Manifest V3
-- Implements secure local file access
-- Smart problem mapping system
-- Efficient solution retrieval algorithm
+Edit `bot/.env`:
 
-## Language Support
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `LEETCODE_USERNAME` | Gmail email | Required |
+| `LEETCODE_PASSWORD` | Gmail password | Required |
+| `HEADLESS` | Run invisible | `true` |
+| `PROBLEMS_PER_RUN` | Problems per run | `2` |
 
-Currently optimized for C++, but designed for multi-language support:
-- C++ (.cpp files) - Fully Supported
-- Python (.py files) - Ready for Implementation
-- Java (.java files) - Ready for Implementation
-- JavaScript (.js files) - Ready for Implementation
+## Project Structure
 
-## Performance
+```
+├── bot/
+│   ├── main.py           # Main automation
+│   ├── browser_automation.py
+│   ├── solution_loader.py
+│   ├── progress.py       # Tracks solved problems
+│   └── browser_profile/  # Saved login session
+├── solutions/            # 3000+ C++ solutions
+├── ecosystem.config.js   # PM2 cron config
+├── deploy.sh            # VPS setup script
+└── requirements.txt
+```
 
-- Instant problem detection
-- Fast solution loading
-- Minimal memory footprint
-- Efficient file system operations
+## How It Works
 
-## Security
-
-- Local file system access only
-- No external API calls
-- No data collection
-- Secure manifest implementation
-
-## TODO List
-
-- [x] Display solutions according to problem name
-- [x] Implement full automation for problem submission process
-- [x] Add automatic navigation to next problem
-- [x] Expand problem mapping to 3359
-- [ ] Add support for multiple programming languages
-- [ ] Implement solution versioning
-- [ ] Add solution performance metrics
-- [ ] Create solution testing framework
-- [ ] Add problem difficulty filtering
-- [ ] Implement solution commenting system
-
-## Contributing
-
-Feel free to contribute by:
-1. Expanding the problem mapping range
-2. Adding support for additional programming languages
-3. Improving the UI/UX
-4. Adding new features from the TODO list
-5. Reporting bugs or suggesting improvements
+1. **Login**: Google OAuth (bypasses Cloudflare)
+2. **Select Problem**: Next unsolved problem sequentially
+3. **Load Solution**: From `/solutions` folder
+4. **Submit**: Insert code and submit to LeetCode
+5. **Track**: Save to `progress.json` (won't re-solve)
 
 ## License
 
-MIT License - Feel free to use and modify as needed.
-
-## Future Plans
-
-- Integration with LeetCode's API
-- Support for problem categories and tags
-- Solution performance comparison
-- Progress tracking dashboard
-- Multiple solution variants per problem
+MIT
