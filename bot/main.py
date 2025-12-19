@@ -53,34 +53,35 @@ async def detect_cloudflare(page: Page) -> bool:
 async def detect_premium_problem(page: Page) -> bool:
     """
     Detect if current problem requires premium subscription.
-    Uses 3-tier detection hierarchy (fastest to slowest).
+    Only use definitive checks - avoid false positives.
     """
     try:
-        # Tier 1: URL-based detection (fastest)
+        # Tier 1: URL-based detection (fastest, most reliable)
         current_url = page.url.lower()
         if "subscribe" in current_url or "/premium" in current_url:
+            print("  Premium detected: URL contains subscribe/premium")
             return True
         
         # Tier 2: Text-based detection (most stable)
         await page.wait_for_load_state("domcontentloaded")
-        premium_texts = [
-            page.locator("text=Subscribe to unlock"),
-            page.locator("text=Premium Question"),
-            page.locator("text=This question is for premium users only"),
+        await asyncio.sleep(2)  # Give page time to render
+        
+        # Check for explicit premium indicators
+        premium_indicators = [
+            ("text=Subscribe to unlock", "Subscribe to unlock text"),
+            ("text=Premium Question", "Premium Question text"),
+            ("text=This question is for premium users only", "Premium users only text"),
+            ('[data-icon="lock"]', "Lock icon"),
         ]
-        for locator in premium_texts:
+        
+        for locator_str, description in premium_indicators:
+            locator = page.locator(locator_str)
             if await locator.count() > 0:
+                print(f"  Premium detected: {description}")
                 return True
         
-        # Tier 3: Editor absence check (fallback - less reliable)
-        # Wait a reasonable time for editor to load
-        await asyncio.sleep(3)
-        editor = page.locator(".monaco-editor")
-        if await editor.count() == 0:
-            # Double-check by looking for premium lock icon
-            lock_icon = page.locator('[data-icon="lock"]')
-            if await lock_icon.count() > 0:
-                return True
+        # NOT checking for editor absence - too unreliable
+        # Editor may take time to load, causing false positives
         
         return False
     except Exception as e:
