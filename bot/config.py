@@ -37,6 +37,10 @@ CSRF_TOKEN = os.getenv("CSRF_TOKEN", "")
 PROBLEMS_PER_RUN = int(os.getenv("PROBLEMS_PER_RUN", "1"))
 HEADLESS = os.getenv("HEADLESS", "false").lower() == "true"
 
+# Telegram Notifications
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+
 # Problem ranges (matching solutions folder structure)
 PROBLEM_RANGES = [
     "0000-0099", "0100-0199", "0200-0299", "0300-0399", "0400-0499",

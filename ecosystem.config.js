@@ -3,9 +3,10 @@
 
 module.exports = {
     apps: [
+        // Main solver - runs on cron schedule
         {
-            name: "leetcode-bot",
-            script: "/var/www/leetcode-bot/venv/bin/python",
+            name: "leetcode-solver",
+            script: "venv/bin/python",
             args: "-m bot.main",
             cwd: "/var/www/leetcode-bot",
 
@@ -16,8 +17,8 @@ module.exports = {
             autorestart: false,
 
             // Keep logs
-            error_file: "/var/log/leetcode-bot/error.log",
-            out_file: "/var/log/leetcode-bot/output.log",
+            error_file: "logs/solver-error.log",
+            out_file: "logs/solver-output.log",
             log_date_format: "YYYY-MM-DD HH:mm:ss",
 
             // Environment variables
@@ -28,6 +29,26 @@ module.exports = {
 
             // Max memory restart (optional safety)
             max_memory_restart: "500M"
+        },
+
+        // Telegram listener - runs 24/7 for /start, /status commands
+        {
+            name: "leetcode-listener",
+            script: "venv/bin/python",
+            args: "-m bot.bot_listener",
+            cwd: "/var/www/leetcode-bot",
+
+            // Keep it running always
+            autorestart: true,
+            restart_delay: 5000,
+
+            // Keep logs
+            error_file: "logs/listener-error.log",
+            out_file: "logs/listener-output.log",
+            log_date_format: "YYYY-MM-DD HH:mm:ss",
+
+            // Very lightweight - limit memory just in case
+            max_memory_restart: "100M"
         }
     ]
 };

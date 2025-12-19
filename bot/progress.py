@@ -82,6 +82,33 @@ def mark_as_failed(problem_number: int, problem_name: str, error: str) -> None:
     print(f"✗ Problem #{problem_number} ({problem_name}) failed: {error}")
 
 
+def mark_as_skipped(problem_number: int, problem_name: str, reason: str) -> None:
+    """Mark a problem as skipped (premium or no solution)."""
+    data = load_progress()
+    
+    # Store in "skipped" section - these are expected to be skipped
+    if "skipped" not in data:
+        data["skipped"] = {}
+    
+    data["skipped"][str(problem_number)] = {
+        "name": problem_name,
+        "number": problem_number,
+        "skipped_at": datetime.now().isoformat(),
+        "reason": reason,  # "premium" or "no_solution"
+    }
+    
+    # Also add to solved set so we don't retry
+    data["solved"][str(problem_number)] = {
+        "name": problem_name,
+        "number": problem_number,
+        "solved_at": datetime.now().isoformat(),
+        "status": f"skipped_{reason}",
+    }
+    
+    save_progress(data)
+    print(f"⏭️ Problem #{problem_number} ({problem_name}) skipped: {reason}")
+
+
 def get_solve_count() -> int:
     """Get total number of problems solved by the bot."""
     return len(get_solved_set())
