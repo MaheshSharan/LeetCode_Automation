@@ -108,36 +108,39 @@ async def wait_for_verdict(page: Page, timeout_ms: int = 30000) -> str:
              "memory_limit", "compile_error", "stalled", or "unknown"
     """
     try:
-        # Wait for any verdict to appear
-        verdict_locator = page.locator(
-            "text=Accepted, "
-            "text=Wrong Answer, "
-            "text=Runtime Error, "
-            "text=Time Limit Exceeded, "
-            "text=Memory Limit Exceeded, "
-            "text=Compile Error"
-        ).first
+        # Wait for submission result to appear
+        # LeetCode shows result in a specific area after submission
+        start_time = asyncio.get_event_loop().time()
+        timeout_sec = timeout_ms / 1000
         
-        await verdict_locator.wait_for(timeout=timeout_ms)
-        
-        # Check which verdict appeared
-        if await page.locator("text=Accepted").count() > 0:
-            return "accepted"
-        elif await page.locator("text=Wrong Answer").count() > 0:
-            return "wrong_answer"
-        elif await page.locator("text=Runtime Error").count() > 0:
-            return "runtime_error"
-        elif await page.locator("text=Time Limit Exceeded").count() > 0:
-            return "time_limit"
-        elif await page.locator("text=Memory Limit Exceeded").count() > 0:
-            return "memory_limit"
-        elif await page.locator("text=Compile Error").count() > 0:
-            return "compile_error"
-        else:
-            return "unknown"
+        while (asyncio.get_event_loop().time() - start_time) < timeout_sec:
+            # Check for various verdict indicators
+            page_content = await page.content()
             
-    except PlaywrightTimeout:
+            if "Accepted" in page_content:
+                # Verify it's the actual verdict, not just text on page
+                accepted = page.locator('[data-e2e-locator="submission-result"]')
+                if await accepted.count() > 0:
+                    return "accepted"
+                # Alternative check
+                if await page.locator('text="Accepted"').count() > 0:
+                    return "accepted"
+            
+            if "Wrong Answer" in page_content:
+                return "wrong_answer"
+            if "Runtime Error" in page_content:
+                return "runtime_error"
+            if "Time Limit Exceeded" in page_content:
+                return "time_limit"
+            if "Memory Limit Exceeded" in page_content:
+                return "memory_limit"
+            if "Compile Error" in page_content:
+                return "compile_error"
+            
+            await asyncio.sleep(1)
+        
         return "stalled"
+            
     except Exception as e:
         print(f"Error waiting for verdict: {e}")
         return "unknown"
@@ -292,15 +295,36 @@ async def select_cpp_language(page: Page) -> bool:
     """Select C++ as the programming language."""
     print("  Selecting C++ language...")
     try:
-        # Click language dropdown
-        lang_btn = page.locator('button:has-text("Python"), button:has-text("Java"), button:has-text("C++")')
+        # First check if C++ is already selected
+        current_lang = page.locator('button:has-text("C++")')
+        if await current_lang.count() > 0:
+            # Check if it's the language selector button (not dropdown item)
+            btn_text = await current_lang.first.inner_text()
+            if "C++" in btn_text and len(btn_text.strip()) < 10:
+                print("  C++ already selected")
+                return True
+        
+        # Click language dropdown button
+        lang_btn = page.locator('button:has-text("Python"), button:has-text("Java"), button:has-text("C++"), button:has-text("Python3")')
         if await lang_btn.count() > 0:
             await lang_btn.first.click()
             await asyncio.sleep(1)
             
-            # Select C++
-            cpp_option = page.locator('text=C++')
-            await cpp_option.click()
+            # Select C++ from dropdown - be specific to avoid the button
+            # Use the dropdown/dialog context
+            cpp_option = page.locator('[role="dialog"] >> text=C++, [role="listbox"] >> text=C++, [role="menu"] >> text=C++')
+            if await cpp_option.count() > 0:
+                await cpp_option.first.click()
+            else:
+                # Fallback: try to find C++ option that's not the button
+                all_cpp = page.locator('text=C++')
+                count = await all_cpp.count()
+                if count > 1:
+                    # Click the second one (dropdown option, not button)
+                    await all_cpp.nth(1).click()
+                elif count == 1:
+                    await all_cpp.click()
+            
             await asyncio.sleep(1)
             return True
     except Exception as e:
