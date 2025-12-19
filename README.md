@@ -1,14 +1,14 @@
-# LeetCode Daily Bot 🤖
+# LeetCode Daily Bot
 
 Automated LeetCode problem solver using Google OAuth login and C++ solutions. Runs daily via cron, with Telegram notifications for all events.
 
 ## Features
 
-- ✅ **Auto-solves** LeetCode problems daily (via PM2 cron)
-- 📱 **Telegram notifications** for solved/failed/skipped problems
-- 🔒 **Premium detection** - automatically skips locked problems
-- 🛡️ **Edge case handling** - Cloudflare, rate limits, stalled submissions
-- 💾 **Progress tracking** - never re-solves the same problem
+- Auto-solves LeetCode problems daily (via PM2 cron)
+- Telegram notifications for solved/failed/skipped problems
+- Premium detection - automatically skips locked problems
+- Edge case handling - Cloudflare, rate limits, stalled submissions
+- Progress tracking - never re-solves the same problem
 
 ## Quick Start (Local)
 
@@ -131,15 +131,15 @@ Edit `bot/.env`:
 
 ## How It Works
 
-1. **Login**: Google OAuth (bypasses Cloudflare)
-2. **Load Progress**: Check `progress.json` for solved problems
-3. **Select Problem**: Next unsolved problem sequentially
-4. **Premium Check**: Skip if locked (notifies via Telegram)
-5. **Load Solution**: From `/solutions` folder
-6. **Submit**: Insert code via Monaco editor API
-7. **Wait for Verdict**: Timeout after 30s if stalled
-8. **Track**: Save result to `progress.json`
-9. **Notify**: Send Telegram message with result
+1. Login via Google OAuth (bypasses Cloudflare)
+2. Load progress from `progress.json`
+3. Select next unsolved problem sequentially
+4. Check if premium - skip if locked
+5. Load C++ solution from `/solutions` folder
+6. Submit via Monaco editor API
+7. Wait for verdict (timeout after 30s if stalled)
+8. Save result to `progress.json`
+9. Send Telegram notification
 
 ## PM2 Apps
 
