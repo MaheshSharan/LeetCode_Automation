@@ -157,8 +157,8 @@ def main() -> None:
     print("Starting Telegram bot listener...")
     print(f"   Token: {TELEGRAM_BOT_TOKEN[:20]}...")
     
-    # Create the Application
-    application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
+    # Create the Application (disable job queue to avoid pytz issues)
+    application = Application.builder().token(TELEGRAM_BOT_TOKEN).job_queue(None).build()
     
     # Register command handlers
     application.add_handler(CommandHandler("start", start))
